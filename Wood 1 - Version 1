@@ -1,0 +1,91 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <map>
+
+using namespace std;
+
+string WhichSideshouldIdraw(string b, string sides, map<string,string> boxes){
+    if(boxes[to_string(b[0]-'A'+1)+to_string(b[0]-'1')].size()!=2){
+        if(sides.find("R")!=string::npos) return "R";
+    }
+    if(boxes[to_string(b[0]-'A'-1)+to_string(b[0]-'1')].size()!=2){
+        if(sides.find("L")!=string::npos) return "L";
+    }
+    if(boxes[to_string(b[0]-'A')+to_string(b[0]-'1'+1)].size()!=2){
+        if(sides.find("T")!=string::npos) return "T";
+    }
+    if(boxes[to_string(b[0]-'A')+to_string(b[0]-'1'-1)].size()!=2){
+        if(sides.find("B")!=string::npos) return "B";
+    }
+    return "NONE";
+}
+
+int main()
+{
+    int boardSize; // The size of the board.
+    cin >> boardSize; cin.ignore();
+    string playerId; // The ID of the player. 'A'=first player, 'B'=second player.
+    cin >> playerId; cin.ignore();
+    srand(time(0));
+    // game loop
+    while (1) {
+        int playerScore; // The player's score.
+        int opponentScore; // The opponent's score.
+        cin >> playerScore >> opponentScore; cin.ignore();
+        int numBoxes; // The number of playable boxes.
+        map<string,string> B1,B2,B3,B4,allB; //boxes with number of sides to draw
+        cin >> numBoxes; cin.ignore();
+        for (int i = 0; i < numBoxes; i++) {
+            string box; // The ID of the playable box.
+            string sides; // Playable sides of the box.
+            cin >> box >> sides; cin.ignore();
+            allB[box]=sides;
+            if(sides.size()==1) B1[box]=sides;
+            else if(sides.size()==2) B2[box]=sides;
+            else if(sides.size()==3) B3[box]=sides;
+            else B4[box]=sides;
+        }
+        if(!B1.empty()){
+            auto it=B1.begin();
+            cout<<it->first<<" "<<it->second<<endl;
+        }
+        else{
+            string Box;
+            if(!B3.empty()){
+                auto it=B3.begin();
+                string s;
+                for(;it!=B3.end(); it++){
+                    s=WhichSideshouldIdraw(it->first,it->second,allB);
+                    if(s!="NONE"){
+                        cout<<it->first<<" "<<s<<endl;
+                        break;
+                    }
+                }
+            }
+            else if(!B4.empty()){
+                auto it=B4.begin();
+                string s;
+                for(;it!=B4.end(); it++){
+                    s=WhichSideshouldIdraw(it->first,it->second,allB);
+                    if(s!="NONE"){
+                        cout<<it->first<<" "<<s<<endl;
+                        break;
+                    }
+                }
+            }
+            else if(!B2.empty()){
+                auto it=B2.begin();
+                string s;
+                for(;it!=B2.end(); it++){
+                    s=WhichSideshouldIdraw(it->first,it->second,allB);
+                    if(s!="NONE"){
+                        cout<<it->first<<" "<<s<<endl;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
